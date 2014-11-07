@@ -10,7 +10,7 @@
             </div>
 
             <div class="form-group pad">
-                <a href ng-click="channelDelete($index)">Удалить канал <i class="fa fa-trash"></i></a>
+                <a href ng-click="channelDelete(myChannel.id)">Удалить канал <i class="fa fa-trash"></i></a>
             </div>
 
             <div class="form-group pad">
@@ -24,6 +24,7 @@
     </div>
     <br/>
 
+    <!--////////////////// ADD CHANNEL ////////////////////////////////////////// -->
     <div class="row well" ng-class="channel" ng-init="channel='hide'">
         <a href ng-click="channel='hide'" class="close"><i class="fa fa-close"></i></a>
         <br/>
@@ -32,20 +33,20 @@
             <form role="form">
                 <div class="form-group">
                     <label for="feed-title">Заголовок</label>
-                    <input type="text" class="form-control" id="feed-title" required placeholder="Введите заголовок">
+                    <input type="text" class="form-control" id="feed-title" required placeholder="Введите заголовок" ng-model="channel.title">
                 </div>
                 <div class="form-group">
                     <label for="feed-link">Ссылка</label>
-                    <input type="url" class="form-control" id="feed-link" required placeholder="Введите url">
+                    <input type="url" class="form-control" id="feed-link" required placeholder="Введите url" ng-model="channel.link">
                 </div>
 
                 <div class="form-group">
                     <label for="feed-desc">Описание</label>
                     <textarea class="form-control" name="description" required id="feed-desc" cols="30" rows="10"
-                              placeholder="Введите описание"></textarea>
+                              placeholder="Введите описание" ng-model="channel.description"></textarea>
                 </div>
 
-                <button type="submit" class="btn btn-default">Добавить</button>
+                <button type="submit" class="btn btn-default" ng-click="addChannel(channel)">Добавить</button>
 
             </form>
         </div>
@@ -63,29 +64,32 @@
         <br/>
     </div>
 
+    <!--////////////////// ADD NEWSFLASH ////////////////////////////////////////// -->
     <div class="row well" ng-class="newsflash" ng-init="newsflash='hide'">
         <a href ng-click="newsflash='hide'" class="close"><i class="fa fa-close"></i></a>
         <br/>
 
-            <form role="form">
-                <div class="form-group">
-                    <label for="feed-title">Заголовок</label>
-                    <input type="text" class="form-control" id="feed-title" required placeholder="Введите заголовок">
-                </div>
-                <div class="form-group">
-                    <label for="feed-link">Ссылка</label>
-                    <input type="url" class="form-control" id="feed-link" required placeholder="Введите url">
-                </div>
+        <form role="form">
+            <div class="form-group">
+                <label for="newsflash-title">Заголовок</label>
+                <input type="text" class="form-control" id="newsflash-title" required placeholder="Введите заголовок"
+                       ng-model="newsflash.title">
+            </div>
+            <div class="form-group">
+                <label for="newsflash-link">Ссылка</label>
+                <input type="url" class="form-control" id="newsflash-link" required placeholder="Введите url"
+                       ng-model="newsflash.link">
+            </div>
 
-                <div class="form-group">
-                    <label for="feed-desc">Описание</label>
-                    <textarea class="form-control" name="description" required id="feed-desc" cols="30" rows="10"
-                              placeholder="Введите описание"></textarea>
-                </div>
+            <div class="form-group">
+                <label for="newsflash-desc">Описание</label>
+                <textarea class="form-control" name="newsflash-desc" required id="newsflash-desc" cols="30" rows="10"
+                          placeholder="Введите описание" ng-model="newsflash.description"></textarea>
+            </div>
 
-                <button type="submit" class="btn btn-default">Добавить</button>
+            <button type="submit" class="btn btn-default" ng-click="addNewsflash(myChannel.id, newsflash)">Добавить</button>
 
-            </form>
+        </form>
 
         <br/>
     </div>

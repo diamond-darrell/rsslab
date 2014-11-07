@@ -1,23 +1,27 @@
 var rssApp = angular.module('rssCtrl', []);
 
-rssApp.controller('FeedCtrl', function ($scope) {
-    var channels = [
+rssApp.controller('GlobalCtrl', function ($scope) {
+    $scope.channels = [
         {
+            'id': 0,
             'title': 'Android Phones',
             'link': 'http://en.wikipedia.org/wiki/Smartphone',
             'description': 'About Android Phones',
             'feed': [
                 {
+                    'id': 0,
                     'title': 'Nexus S',
                     'link': 'https://ru.wikipedia.org/wiki/Nexus_S',
                     'description': 'Fast just got faster with Nexus S.'
                 },
                 {
+                    'id': 1,
                     'title': 'Motorola XOOM™ with Wi-Fi',
                     'link': 'https://ru.wikipedia.org/wiki/Motorola_XOOM',
                     'description': 'The Next, Next Generation tablet.'
                 },
                 {
+                    'id': 2,
                     'title': 'MOTOROLA XOOM™',
                     'link': 'https://ru.wikipedia.org/wiki/Motorola_XOOM',
                     'description': 'The Next, Next Generation tablet.'
@@ -25,21 +29,25 @@ rssApp.controller('FeedCtrl', function ($scope) {
             ]
         },
         {
+            'id': 1,
             'title': 'iPhones',
             'link': 'https://ru.wikipedia.org/wiki/IPhone',
             'description': 'About iPhones',
             'feed': [
                 {
+                    'id': 0,
                     'title': 'iPhone 4',
                     'link': 'https://ru.wikipedia.org/wiki/IPhone_4',
                     'description': 'Some info'
                 },
                 {
+                    'id': 1,
                     'title': 'iPhone 5',
                     'link': 'https://ru.wikipedia.org/wiki/IPhone_5',
                     'description': 'Some info'
                 },
                 {
+                    'id': 2,
                     'title': 'iPhone 6',
                     'link': 'http://ru.wikipedia.org/wiki/IPhone_6',
                     'description': 'Some info'
@@ -47,9 +55,12 @@ rssApp.controller('FeedCtrl', function ($scope) {
             ]
         }
     ];
-
-    $scope.channels = channels;
     $scope.myChannel = $scope.channels[0];
+});
+
+rssApp.controller('FeedCtrl', function ($scope) {
+
+
 
     $scope.select = function (index) {
         $scope.selected = index;
@@ -78,68 +89,31 @@ rssApp.controller('NavCtrl', function ($scope) {
 });
 
 rssApp.controller('ManageCtrl', function ($scope) {
-    var channels = [
-        {
-            'title': 'Android Phones',
-            'link': 'http://en.wikipedia.org/wiki/Smartphone',
-            'description': 'About Android Phones',
-            'feed': [
-                {
-                    'title': 'Nexus S',
-                    'link': 'https://ru.wikipedia.org/wiki/Nexus_S',
-                    'description': 'Fast just got faster with Nexus S.'
-                },
-                {
-                    'title': 'Motorola XOOM™ with Wi-Fi',
-                    'link': 'https://ru.wikipedia.org/wiki/Motorola_XOOM',
-                    'description': 'The Next, Next Generation tablet.'
-                },
-                {
-                    'title': 'MOTOROLA XOOM™',
-                    'link': 'https://ru.wikipedia.org/wiki/Motorola_XOOM',
-                    'description': 'The Next, Next Generation tablet.'
-                }
-            ]
-        },
-        {
-            'title': 'iPhones',
-            'link': 'https://ru.wikipedia.org/wiki/IPhone',
-            'description': 'About iPhones',
-            'feed': [
-                {
-                    'title': 'iPhone 4',
-                    'link': 'https://ru.wikipedia.org/wiki/IPhone_4',
-                    'description': 'Some info'
-                },
-                {
-                    'title': 'iPhone 5',
-                    'link': 'https://ru.wikipedia.org/wiki/IPhone_5',
-                    'description': 'Some info'
-                },
-                {
-                    'title': 'iPhone 6',
-                    'link': 'http://ru.wikipedia.org/wiki/IPhone_6',
-                    'description': 'Some info'
-                }
-            ]
-        }
-    ];
-
-    $scope.hide = true;
-
-    $scope.channels = channels;
-    $scope.myChannel = $scope.channels[0];
 
     $scope.select = function (index) {
         $scope.selected = index;
     };
 
-    $scope.itemDelete = function (index, channel) {
-        channel.splice(index, 1);
+    $scope.channelDelete = function (index) {
+        $scope.channels.splice(index, 1);
+        $scope.myChannel = $scope.channels[0];
     };
 
-    $scope.channelDelete = function (index) {
-        channels.splice(index, 1);
-        $scope.myChannel = $scope.channels[0];
+    $scope.addNewsflash = function (channel, newsflash) {
+        var id = $scope.channels[channel].feed.length;
+        newsflash.id = id;
+        $scope.channels[channel].feed.push(newsflash);
+        $scope.newsflash = [];
+    };
+
+    $scope.addChannel = function (channel) {
+        var id = $scope.channels.length;
+
+        channel.id = id;
+        if (!('feed' in channel)) {
+            channel.feed = [];
+        }
+        $scope.channels.push(channel);
+        $scope.channel = [];
     };
 });
