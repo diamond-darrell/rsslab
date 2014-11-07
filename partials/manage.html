@@ -8,19 +8,24 @@
                     <option></option>
                 </select>
             </div>
+
             <div class="form-group pad">
-                <a href ng-click="channel=''">Добавить новый <i class="fa fa-plus-circle"></i></a>
+                <a href ng-click="channelDelete($index)">Удалить канал <i class="fa fa-trash"></i></a>
             </div>
 
             <div class="form-group pad">
-                <a href ng-click="myChannel.splice($index, 1)">Удалить <i class="fa fa-trash"></i></a>
+                <a href ng-click="channel=''; newsflash='hide'">Добавить канал <i class="fa fa-plus-circle"></i></a>
+            </div>
+
+            <div class="form-group pad">
+                <a href ng-click="newsflash=''; channel='hide'">Добавить новость <i class="fa fa-plus-circle"></i></a>
             </div>
         </div>
     </div>
     <br/>
 
-    <div class="row well" ng-class="channel">
-        <a href ng-click="channel='add-channel'" class="close"><i class="fa fa-close"></i></a>
+    <div class="row well" ng-class="channel" ng-init="channel='hide'">
+        <a href ng-click="channel='hide'" class="close"><i class="fa fa-close"></i></a>
         <br/>
 
         <div class="col-md-6">
@@ -58,9 +63,39 @@
         <br/>
     </div>
 
+    <div class="row well" ng-class="newsflash" ng-init="newsflash='hide'">
+        <a href ng-click="newsflash='hide'" class="close"><i class="fa fa-close"></i></a>
+        <br/>
+
+            <form role="form">
+                <div class="form-group">
+                    <label for="feed-title">Заголовок</label>
+                    <input type="text" class="form-control" id="feed-title" required placeholder="Введите заголовок">
+                </div>
+                <div class="form-group">
+                    <label for="feed-link">Ссылка</label>
+                    <input type="url" class="form-control" id="feed-link" required placeholder="Введите url">
+                </div>
+
+                <div class="form-group">
+                    <label for="feed-desc">Описание</label>
+                    <textarea class="form-control" name="description" required id="feed-desc" cols="30" rows="10"
+                              placeholder="Введите описание"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-default">Добавить</button>
+
+            </form>
+
+        <br/>
+    </div>
 
     <div class="row" ng-repeat="item in myChannel.feed">
+
         <div class="well">
+            <a href ng-click="itemDelete($index, myChannel.feed)" class="close"><i class="fa fa-close"></i></a>
+            <br/>
+
             <h2>{{item.title}}</h2>
 
             <p>{{item.description}}</p>

@@ -125,10 +125,21 @@ rssApp.controller('ManageCtrl', function ($scope) {
         }
     ];
 
+    $scope.hide = true;
+
     $scope.channels = channels;
     $scope.myChannel = $scope.channels[0];
 
     $scope.select = function (index) {
         $scope.selected = index;
+    };
+
+    $scope.itemDelete = function (index, channel) {
+        channel.splice(index, 1);
+    };
+
+    $scope.channelDelete = function (index) {
+        channels.splice(index, 1);
+        $scope.myChannel = $scope.channels[0];
     };
 });
