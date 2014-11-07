@@ -1,0 +1,19 @@
+<div ng-controller="FeedCtrl">
+    <div class="row">
+        <label for="choose-channel">Канал</label>
+        <select id="choose-channel" ng-model="myChannel" class="form-control"
+                ng-options="channel.title for channel in channels">
+            <option></option>
+        </select>
+    </div>
+    <br/>
+
+    <div class="row" ng-repeat="item in myChannel.feed">
+        <div class="well">
+            <h2>{{item.title}}</h2>
+
+            <p>{{item.description}}</p>
+            <a href="{{item.link}}">See more</a>
+        </div>
+    </div>
+</div>
