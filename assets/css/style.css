@@ -5,3 +5,7 @@
 .hide{
     display: none;
 }
+
+.alert-position {
+    z-index: 9999;
+}

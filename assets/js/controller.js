@@ -99,6 +99,10 @@ rssApp.controller('ManageCtrl', function ($scope) {
         $scope.myChannel = $scope.channels[0];
     };
 
+    $scope.newsflashDelete = function (index, id) {
+        $scope.channels[id].feed.splice(index, 1);
+    };
+
     $scope.addNewsflash = function (channel, newsflash) {
         var id = $scope.channels[channel].feed.length;
         newsflash.id = id;

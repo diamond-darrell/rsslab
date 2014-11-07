@@ -33,11 +33,13 @@
             <form role="form">
                 <div class="form-group">
                     <label for="feed-title">Заголовок</label>
-                    <input type="text" class="form-control" id="feed-title" required placeholder="Введите заголовок" ng-model="channel.title">
+                    <input type="text" class="form-control" id="feed-title" required placeholder="Введите заголовок"
+                           ng-model="channel.title">
                 </div>
                 <div class="form-group">
                     <label for="feed-link">Ссылка</label>
-                    <input type="url" class="form-control" id="feed-link" required placeholder="Введите url" ng-model="channel.link">
+                    <input type="url" class="form-control" id="feed-link" required placeholder="Введите url"
+                           ng-model="channel.link">
                 </div>
 
                 <div class="form-group">
@@ -87,7 +89,8 @@
                           placeholder="Введите описание" ng-model="newsflash.description"></textarea>
             </div>
 
-            <button type="submit" class="btn btn-default" ng-click="addNewsflash(myChannel.id, newsflash)">Добавить</button>
+            <button type="submit" class="btn btn-default" ng-click="addNewsflash(myChannel.id, newsflash)">Добавить
+            </button>
 
         </form>
 
@@ -97,7 +100,7 @@
     <div class="row" ng-repeat="item in myChannel.feed">
 
         <div class="well">
-            <a href ng-click="itemDelete($index, myChannel.feed)" class="close"><i class="fa fa-close"></i></a>
+            <a href ng-click="newsflashDelete($index, myChannel.id)" class="close"><i class="fa fa-close"></i></a>
             <br/>
 
             <h2>{{item.title}}</h2>
@@ -106,4 +109,9 @@
             <a href="{{item.link}}">See more</a>
         </div>
     </div>
+</div>
+<div class="alert alert-success alert-dismissible alert-position" role="alert">
+    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
+            class="sr-only">Close</span></button>
+    <strong>Warning!</strong> Better check yourself, you're not looking too good.
 </div>
