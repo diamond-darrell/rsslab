@@ -27,8 +27,8 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li ng-repeat="nav in links" ng-click="select($index)" ng-class="{active: $index === selected}"><a
-                        href="#/{{nav.link}}">{{nav.name}}</a></li>
+                <li ng-class="{active: isActive('/feed')}"><a href="#/feed">Лента</a></li>
+                <li ng-class="{active: isActive('/manage')}"><a href="#/manage">Менеджер новостей</a></li>
                 <li><a href="#" data-toggle="modal" data-target="#infoModal">Информация</a></li>
             </ul>
 
@@ -71,6 +71,7 @@
 <script src="assets/js/jquery.min.js"></script>
 <script src="assets/js/bootstrap.min.js"></script>
 <script src="assets/js/angular.min.js"></script>
+<!--<script src="assets/js/angular.js"></script>-->
 <script src="assets/js/angular-route.min.js"></script>
 <script src="assets/js/app.js"></script>
 <script src="assets/js/controller.js"></script>

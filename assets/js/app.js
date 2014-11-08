@@ -6,8 +6,7 @@ var rssApp = angular.module('rssApp', [
 rssApp.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.
         when('/', {
-            templateUrl: 'partials/feed.html',
-            controller: 'FeedCtrl'
+            redirectTo: '/feed'
         }).
         when('/feed', {
             templateUrl: 'partials/feed.html',
