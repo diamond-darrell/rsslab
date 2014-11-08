@@ -1,5 +1,6 @@
 var rssApp = angular.module('rssApp', [
     'ngRoute',
+    'ui.bootstrap',
     'rssCtrl'
 ]);
 

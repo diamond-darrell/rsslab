@@ -1,6 +1,14 @@
 var rssApp = angular.module('rssCtrl', []);
 
 rssApp.controller('GlobalCtrl', function ($scope) {
+
+    $scope.alertsMsg = {
+        'SUCCESS': {
+            'type': 'success',
+            'msg': 'Ура! Изменения сохранены!'
+        }
+    };
+
     $scope.channels = [
         {
             'id': 0,
@@ -76,7 +84,7 @@ rssApp.controller('FeedCtrl', function ($scope) {
 
 rssApp.controller('NavCtrl', function ($scope, $location) {
 
-    $scope.isActive = function(location) {
+    $scope.isActive = function (location) {
         return location === $location.path();
     };
 
@@ -87,20 +95,24 @@ rssApp.controller('NavCtrl', function ($scope, $location) {
     };
 });
 
-rssApp.controller('ManageCtrl', function ($scope) {
+rssApp.controller('ManageCtrl', function ($scope, $timeout) {
 
     $scope.select = function (index) {
         $scope.selected = index;
     };
 
-    $scope.channelDelete = function (index) {
+    $scope.deleteChannel = function (index) {
         $scope.channels.splice(index, 1);
         $scope.myChannel = $scope.channels[0];
         $scope.channels = rewriteArraysId($scope.channels);
+
+        onAlert($scope.alertsMsg.SUCCESS);
     };
 
-    $scope.newsflashDelete = function (index, id) {
+    $scope.deleteNewsflash = function (index, id) {
         $scope.channels[id].feed.splice(index, 1);
+
+        onAlert($scope.alertsMsg.SUCCESS);
     };
 
     $scope.addNewsflash = function (channel, newsflash) {
@@ -109,6 +121,8 @@ rssApp.controller('ManageCtrl', function ($scope) {
         newsflash.id = id;
         $scope.channels[channel].feed.push(newsflash);
         $scope.newsflash = [];
+
+        onAlert($scope.alertsMsg.SUCCESS);
     };
 
     $scope.addChannel = function (channel) {
@@ -120,6 +134,8 @@ rssApp.controller('ManageCtrl', function ($scope) {
         }
         $scope.channels.push(channel);
         $scope.channel = [];
+
+        onAlert($scope.alertsMsg.SUCCESS);
     };
 
     // rewrite `id` property in channel's array
@@ -129,5 +145,23 @@ rssApp.controller('ManageCtrl', function ($scope) {
             arr[i].id = i;
         }
         return arr;
+    };
+
+    var onAlert = function (result) {
+        $scope.alertClass = "animated fadeInDown";
+        $scope.alerts = [
+            {type: result.type, msg: result.msg}
+        ];
+        $timeout(removeAlert, 5000);
+
+
+    };
+
+    var removeAlert = function () {
+        $scope.alertClass = "animated fadeOutDown";
+        $timeout(function () {
+            $scope.alerts = [];
+        }, 800);
+
     }
 });
