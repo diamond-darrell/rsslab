@@ -14,7 +14,7 @@ class DataBase
     private $user = 'root';
     private $password = '';
     private $db = 'rss_ar';
-    private $queryString = '';
+    private $query_string = '';
     private $result = null;
     private $feed = array();
 
@@ -27,58 +27,86 @@ class DataBase
         mysql_query("set collation_connection='utf8_general_ci'");
     }
 
-    public function insertNewsflash($params)
+    public function deleteNewsflash($params)
     {
-        $this->queryString = "INSERT INTO newsflash (title, description, link)"
-                . "VALUES ('{$params->title}', '{$params->description}', '{$params->link}')";
+        $this->query_string = "DELETE FROM newsflash WHERE id='{$params->id}'";
         $this->execute();
 
-        $this->queryString = "@max := SELECT MAX(id) FROM newsflash;"
-                . "INSERT INTO news (channel, newsflash)"
-                . "VALUES ('{$params->channel}', '@max')";
+        $this->query_string = "DELETE FROM news WHERE newsflash='{$params->id}'";
+        $this->execute();
+    }
+
+    public function deleteChannel($params)
+    {
+        $this->query_string = "SELECT newsflash FROM news WHERE channel='{$params->id}'";
+        $this->execute();
+
+        while ($row = mysql_fetch_array($this->result)) {
+            $this->query_string = "DELETE FROM newsflash WHERE id='{$row['newsflash']}'";
+            $this->execute();
+        }
+
+        $this->query_string = "DELETE FROM news WHERE channel='{$params->id}'";
+        $this->execute();
+
+        $this->query_string = "DELETE FROM channel WHERE id='{$params->id}'";
+        $this->execute();
+
+    }
+
+    public function insertNewsflash($params)
+    {
+        $max = 0;
+        $this->query_string = "INSERT INTO newsflash (title, description, link) VALUES ('{$params->title}', '{$params->description}', '{$params->link}');";
+        $this->execute();
+
+        $this->query_string = "SELECT MAX(id) AS id FROM newsflash;";
+        $this->execute();
+        while ($row = mysql_fetch_array($this->result)) {
+            $max = $row['id'];
+        }
+
+        $this->query_string = "INSERT INTO news (channel, newsflash) VALUES ('{$params->channel}', '{$max}');";
         $this->execute();
     }
 
     public function insertChannel($params)
     {
-        $this->queryString = "INSERT INTO channel (title, description, link)"
-                . "VALUES ('{$params->title}', '{$params->description}', '{$params->link}')";
+        $this->query_string = "INSERT INTO channel (title, description, link) VALUES ('{$params->title}', '{$params->description}', '{$params->link}')";
         $this->execute();
     }
 
-    public function extract($param)
+    public function extract()
     {
-        $tmpChannels = array();
-        $this->queryString = "SELECT id, channel, newsflash FROM news";
+        $this->query_string = "SELECT * FROM channel";
         $this->execute();
 
         while ($row = mysql_fetch_array($this->result)) {
-            $tmpFeed[] = array('id' => $row['id'],
-                'channel' => $row['channel'],
-                'newsflash' => $row['newsflash']);
-        }
-
-        $this->queryString = "SELECT id, title, description, link FROM channel";
-        $this->execute();
-
-        while ($row = mysql_fetch_array($this->result)) {
-            $tmpChannels[] = array('id' => $row['id'],
+            $this->feed[] = array(
+                'id' => $row['id'],
+                'channel_id' => $row['id'],
                 'title' => $row['title'],
-                'desription' => $row['desription'],
-                'link' => $row['link']);
+                'description' => $row['description'],
+                'link' => $row['link'],
+                'feed' => array());
         }
 
-        for ($i = 0; $i <= count($tmpFeed); $i += 1) {
-            $tmpNewsflash = array();
+        $this->query_string = "SELECT newsflash.id, newsflash.title, newsflash.link, newsflash.description, news.channel
+                               FROM newsflash
+                               INNER JOIN news
+                               ON newsflash.id = news.newsflash";
+        $this->execute();
 
-            $this->queryString = "SELECT id, title, description, link FROM newsflash WHERE id={$tmpFeed[$i]->newsflash}";
-            $this->execute();
-
-            while ($row = mysql_fetch_array($this->result)) {
-                $tmpChannels[] = array('id' => $row['id'],
-                    'title' => $row['title'],
-                    'desription' => $row['desription'],
-                    'link' => $row['link']);
+        while ($row = mysql_fetch_array($this->result)) {
+            for ($i = 0; $i < count($this->feed); $i += 1) {
+                if ($this->feed[$i]['id'] == $row['channel']) {
+                    $this->feed[$i]['feed'][] = array(
+                        'id' => $row['id'],
+                        'title' => $row['title'],
+                        'description' => $row['description'],
+                        'link' => $row['link']
+                    );
+                }
             }
         }
     }
@@ -88,7 +116,7 @@ class DataBase
         if (!empty($this->query_string) && $this->query_string != "") {
             $this->result = mysql_query($this->query_string) or die(mysql_error());
         }
-        $this->queryString = '';
+        $this->query_string = '';
     }
 
     public function getFeed()

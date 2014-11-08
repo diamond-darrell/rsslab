@@ -1,8 +1,10 @@
 <div ng-controller="FeedCtrl">
     <div class="row">
         <label for="choose-channel">Канал</label>
-        <select id="choose-channel" ng-model="myChannel" class="form-control"
-                ng-options="channel.title for channel in channels">
+        <select id="choose-channel"
+                ng-model="myChannel"
+                ng-options="channel.title for channel in channels"
+                class="form-control">
             <option></option>
         </select>
     </div>
