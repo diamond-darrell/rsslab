@@ -10,9 +10,16 @@
     </div>
     <br/>
 
+    <div class="row">
+        <i>{{myChannel.datetime}}</i>
+        <h4>{{myChannel.description}}</h4>
+    </div>
+    <br/>
+
     <div class="row" ng-repeat="item in myChannel.feed">
         <div class="well">
-            <h2>{{item.title}}</h2>
+            <p class="text-right">{{item.datetime}}</p>
+            <h3>{{item.title}}</h3>
 
             <p>{{item.description}}</p>
             <a href="{{item.link}}">See more</a>

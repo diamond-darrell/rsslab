@@ -30,6 +30,8 @@ rssApp.controller('GlobalCtrl', function ($scope, $http, $timeout) {
     }).then(function () {
         $scope.channels = $scope.rewriteArraysId($scope.channels);
         $scope.myChannel = $scope.channels[0];
+
+        console.log($scope.myChannel.feed);
     });
 
     // test data
@@ -188,9 +190,8 @@ rssApp.controller('ManageCtrl', function ($scope, $http) {
     };
 
     $scope.addChannel = function (channel) {
-        var id = $scope.channels.length;
 
-        channel.id = id;
+        channel.id = $scope.channels.length;
         if (!('feed' in channel)) {
             channel.feed = [];
         }

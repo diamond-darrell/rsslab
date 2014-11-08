@@ -63,7 +63,10 @@ class DataBase
     public function insertNewsflash($params)
     {
         $max = 0;
-        $this->query_string = "INSERT INTO newsflash (title, description, link) VALUES ('{$params->title}', '{$params->description}', '{$params->link}');";
+        $date = new \DateTime('now');
+        $result = $date->format('d-m-Y H:i:s');
+
+        $this->query_string = "INSERT INTO newsflash (title, description, link, datetime) VALUES ('{$params->title}', '{$params->description}', '{$params->link}', '{$result}');";
         $this->execute();
 
         $this->query_string = "SELECT MAX(id) AS id FROM newsflash;";
@@ -78,7 +81,10 @@ class DataBase
 
     public function insertChannel($params)
     {
-        $this->query_string = "INSERT INTO channel (title, description, link) VALUES ('{$params->title}', '{$params->description}', '{$params->link}')";
+        $date = new \DateTime('now');
+        $result = $date->format('d-m-Y H:i:s');
+
+        $this->query_string = "INSERT INTO channel (title, description, link, datetime) VALUES ('{$params->title}', '{$params->description}', '{$params->link}', '{$result}')";
         $this->execute();
     }
 
@@ -94,10 +100,11 @@ class DataBase
                 'title' => $row['title'],
                 'description' => $row['description'],
                 'link' => $row['link'],
+                'datetime' => $row['datetime'],
                 'feed' => array());
         }
 
-        $this->query_string = "SELECT newsflash.id, newsflash.title, newsflash.link, newsflash.description, news.channel
+        $this->query_string = "SELECT newsflash.id, newsflash.title, newsflash.link, newsflash.description, newsflash.datetime, news.channel
                                FROM newsflash
                                INNER JOIN news
                                ON newsflash.id = news.newsflash";
@@ -110,7 +117,8 @@ class DataBase
                         'id' => $row['id'],
                         'title' => $row['title'],
                         'description' => $row['description'],
-                        'link' => $row['link']
+                        'link' => $row['link'],
+                        'datetime' => $row['datetime']
                     );
                 }
             }
