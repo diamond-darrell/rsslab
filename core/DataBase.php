@@ -29,27 +29,26 @@ class DataBase
 
     public function deleteNewsflash($params)
     {
-        $this->query_string = "DELETE FROM newsflash WHERE id='{$params->id}'";
+        $this->query_string = "DELETE FROM newsflash WHERE id='{$params}'";
         $this->execute();
 
-        $this->query_string = "DELETE FROM news WHERE newsflash='{$params->id}'";
+        $this->query_string = "DELETE FROM news WHERE newsflash='{$params}'";
         $this->execute();
     }
 
     public function deleteChannel($params)
     {
-        $this->query_string = "SELECT newsflash FROM news WHERE channel='{$params->id}'";
+        $this->query_string = "SELECT newsflash FROM news WHERE channel='{$params}'";
         $this->execute();
 
-        while ($row = mysql_fetch_array($this->result)) {
-            $this->query_string = "DELETE FROM newsflash WHERE id='{$row['newsflash']}'";
-            $this->execute();
-        }
-
-        $this->query_string = "DELETE FROM news WHERE channel='{$params->id}'";
+        $row = mysql_fetch_array($this->result);
+        $this->query_string = "DELETE FROM newsflash WHERE id='{$row['newsflash']}'";
         $this->execute();
 
-        $this->query_string = "DELETE FROM channel WHERE id='{$params->id}'";
+        $this->query_string = "DELETE FROM news WHERE channel='{$params}'";
+        $this->execute();
+
+        $this->query_string = "DELETE FROM channel WHERE id='{$params}'";
         $this->execute();
 
     }

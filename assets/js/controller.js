@@ -96,7 +96,6 @@ rssApp.controller('GlobalCtrl', function ($scope, $http, $timeout) {
     //    }
     //];
 
-
     // rewrite `id` property in channel's array
     // bad idea, but works :)
     $scope.rewriteArraysId = function (arr) {
@@ -161,18 +160,21 @@ rssApp.controller('ManageCtrl', function ($scope, $http) {
         $scope.selected = index;
     };
 
-    $scope.deleteChannel = function (index) {
+    $scope.deleteChannel = function (index, id) {
+        dataBase.deleteChannel(id);
+
         $scope.channels.splice(index, 1);
         $scope.myChannel = $scope.channels[0];
         $scope.channels = $scope.rewriteArraysId($scope.channels);
-
-        $scope.onAlert($scope.alertsMsg.SUCCESS);
     };
 
     $scope.deleteNewsflash = function (index, id) {
+        var newsflashId = $scope.channels[id].feed[index].id;
+
+        dataBase.deleteNewsflash(newsflashId);
+
         $scope.channels[id].feed.splice(index, 1);
 
-        $scope.onAlert($scope.alertsMsg.SUCCESS);
     };
 
     $scope.addNewsflash = function (channel, channel_id, newsflash) {
@@ -222,18 +224,8 @@ rssApp.controller('ManageCtrl', function ($scope, $http) {
             //console.log(item);
         },
 
-        deleteNewsflash: function (item) {
-            $http.post('core/saveChannel.php', item).success(function () {
-                $scope.onAlert($scope.alertsMsg.SUCCESS);
-                $scope.channel = [];
-            }).error(function () {
-                $scope.onAlert($scope.alertsMsg.DANGER);
-            });
-            //console.log(item);
-        },
-
         deleteChannel: function (id) {
-            $http.post('core/saveChannel.php', id).success(function () {
+            $http.post('core/deleteChannel.php', id).success(function () {
                 $scope.onAlert($scope.alertsMsg.SUCCESS);
                 $scope.channel = [];
             }).error(function () {
@@ -242,7 +234,7 @@ rssApp.controller('ManageCtrl', function ($scope, $http) {
         },
 
         deleteNewsflash: function (id) {
-            $http.post('core/saveChannel.php', id).success(function () {
+            $http.post('core/deleteNewsflash.php', id).success(function () {
                 $scope.onAlert($scope.alertsMsg.SUCCESS);
                 $scope.channel = [];
             }).error(function () {
