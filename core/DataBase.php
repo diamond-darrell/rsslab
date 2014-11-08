@@ -9,11 +9,18 @@ namespace Core;
  */
 class DataBase
 {
+//  server settings
+//    private $host = 'mysql.hostinger.com.ua';
+//    private $user = 'u894053700_root';
+//    private $password = 'qu7C5K5sktyfI79Rt';
+//    private $db = 'u894053700_rss';
 
+//  localhost settings
     private $host = 'localhost';
     private $user = 'root';
     private $password = '';
     private $db = 'rss_ar';
+
     private $query_string = '';
     private $result = null;
     private $feed = array();
