@@ -66,7 +66,7 @@ class DataBase
         $date = new \DateTime('now');
         $result = $date->format('d-m-Y H:i:s');
 
-        $this->query_string = "INSERT INTO newsflash (title, description, link, datetime) VALUES ('{$params->title}', '{$params->description}', '{$params->link}', '{$result}');";
+        $this->query_string = "INSERT INTO newsflash (title, description, link, image, datetime) VALUES ('{$params->title}', '{$params->description}', '{$params->link}', '{$params->image}', '{$result}');";
         $this->execute();
 
         $this->query_string = "SELECT MAX(id) AS id FROM newsflash;";
@@ -104,7 +104,7 @@ class DataBase
                 'feed' => array());
         }
 
-        $this->query_string = "SELECT newsflash.id, newsflash.title, newsflash.link, newsflash.description, newsflash.datetime, news.channel
+        $this->query_string = "SELECT newsflash.id, newsflash.title, newsflash.link, newsflash.description, newsflash.image, newsflash.datetime, news.channel
                                FROM newsflash
                                INNER JOIN news
                                ON newsflash.id = news.newsflash";
@@ -118,6 +118,7 @@ class DataBase
                         'title' => $row['title'],
                         'description' => $row['description'],
                         'link' => $row['link'],
+                        'image' => $row['image'],
                         'datetime' => $row['datetime']
                     );
                 }

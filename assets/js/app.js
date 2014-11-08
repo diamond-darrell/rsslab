@@ -1,7 +1,8 @@
 var rssApp = angular.module('rssApp', [
     'ngRoute',
     'ui.bootstrap',
-    'rssCtrl'
+    'rssCtrl',
+    'angularFileUpload'
 ]);
 
 rssApp.config(['$routeProvider', function ($routeProvider) {

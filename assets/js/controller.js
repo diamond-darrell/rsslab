@@ -31,7 +31,7 @@ rssApp.controller('GlobalCtrl', function ($scope, $http, $timeout) {
         $scope.channels = $scope.rewriteArraysId($scope.channels);
         $scope.myChannel = $scope.channels[0];
 
-        console.log($scope.myChannel.feed);
+        //console.log($scope.myChannel.feed);
     });
 
     // test data
@@ -153,7 +153,9 @@ rssApp.controller('NavCtrl', function ($scope, $location) {
 //-----------------------------------------------------------------------
 // Manage page controller
 //-----------------------------------------------------------------------
-rssApp.controller('ManageCtrl', function ($scope, $http) {
+rssApp.controller('ManageCtrl', function ($scope, $http, FileUploader) {
+
+    var image = "";
 
     //-----------------------------------------------------------------------
     // client side functions
@@ -184,6 +186,7 @@ rssApp.controller('ManageCtrl', function ($scope, $http) {
 
         newsflash.id = id;
         newsflash.channel = channel_id;
+        newsflash.image = "images/" + image;
         $scope.channels[channel].feed.push(newsflash);
 
         dataBase.saveNewsflash(newsflash);
@@ -243,4 +246,29 @@ rssApp.controller('ManageCtrl', function ($scope, $http) {
             });
         }
     };
+
+    var uploader = $scope.uploader = new FileUploader({
+        url: 'core/upload.php'
+    });
+
+    // FILTERS
+
+    uploader.filters.push({
+        name: 'imageFilter',
+        fn: function(item /*{File|FileLikeObject}*/, options) {
+            var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
+            return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
+        }
+    });
+
+    // sorry for that T_T
+    // you can kill me later
+    $scope.fileNameChanged = function() {
+        var input = document.getElementById("newsflash-img");
+        image = input.value.substr(12);
+
+        console.log(image);
+    };
+
+
 });

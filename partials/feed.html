@@ -13,16 +13,21 @@
     <div class="row">
         <i>{{myChannel.datetime}}</i>
         <h4>{{myChannel.description}}</h4>
+        <a href="{{myChannel.link}}">Перейти на канал</a>
     </div>
     <br/>
 
-    <div class="row" ng-repeat="item in myChannel.feed">
-        <div class="well">
+    <div class="row well" ng-repeat="item in myChannel.feed">
+        <div class="col-md-3">
+            <img class="img-responsive img-rounded" ng-src="{{item.image}}">
+        </div>
+        <div class="col-md-9">
             <p class="text-right">{{item.datetime}}</p>
+
             <h3>{{item.title}}</h3>
 
             <p>{{item.description}}</p>
-            <a href="{{item.link}}">See more</a>
+            <a href="{{item.link}}">Перейти на новость</a>
         </div>
     </div>
 </div>
