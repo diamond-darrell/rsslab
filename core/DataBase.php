@@ -18,7 +18,7 @@ class DataBase
 //  localhost settings
     private $host = 'localhost';
     private $user = 'root';
-    private $password = '';
+    private $password = 'thatsinsane';
     private $db = 'rss_ar';
 
     private $query_string = '';
