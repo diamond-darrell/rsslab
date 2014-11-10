@@ -1,5 +1,5 @@
-- infinite scroll
+TODO: - infinite scroll
 
-- export feed to rss-xml
+TODO: - export feed to rss-xml
 
-- import external feed
+TODO: - import external feed

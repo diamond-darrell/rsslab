@@ -29,12 +29,13 @@ class DataBase
     private $pdo = null;
     private $feed = array();
 
-    public function connect()
+    public function __construct()
     {
         $dsn = "mysql:host=$this->host;dbname=$this->db;charset=$this->charset";
         $opt = array(
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_PERSISTENT => true
         );
 
         try {
@@ -44,6 +45,7 @@ class DataBase
         }
     }
 
+    // i know, it's bad
     private function deleteImage($path)
     {
         $deletePath = $_SERVER['DOCUMENT_ROOT'] .
@@ -194,5 +196,7 @@ class DataBase
     {
         if (!empty($this->feed))
             return $this->feed;
+        else
+            return "No feed";
     }
 }
