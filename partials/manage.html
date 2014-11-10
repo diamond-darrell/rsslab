@@ -108,6 +108,7 @@
                 <div class="form-group">
                     <label for="newsflash-img">Изображение</label>
                     <input id="newsflash-img" class="form-control" type="file"
+                           ng-model="newsflash.image"
                            nv-file-select="" uploader="uploader"
                            onchange="angular.element(this).scope().fileNameChanged()"/><br/>
                 </div>

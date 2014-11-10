@@ -25,7 +25,7 @@ rssApp.controller('GlobalCtrl', function ($scope, $http, $timeout) {
 
     $http.get('core/showFeed.php').success(function (data) {
         $scope.channels = data;
-		console.log($scope.channels);
+		//console.log($scope.channels);
     }).error(function () {
         $scope.onAlert($scope.alertsMsg.FAIL);
     }).then(function () {
@@ -205,7 +205,7 @@ rssApp.controller('ManageCtrl', function ($scope, $http, FileUploader) {
         var input = document.getElementById("newsflash-img");
         image = input.value.substr(12);
 
-        console.log(image);
+        //console.log(image);
     };
 
 

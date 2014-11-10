@@ -2,6 +2,10 @@
 
 namespace Core;
 
+use \PDO;
+use \PDOException;
+use \DateTime;
+
 /**
  * Description of DataBase
  *
@@ -18,120 +22,172 @@ class DataBase
 //  localhost settings
     private $host = 'localhost';
     private $user = 'root';
-    private $password = 'thatsinsane';
+    private $password = '';
     private $db = 'rss_ar';
 
-    private $query_string = '';
-    private $result = null;
+    private $charset = 'utf8';
+    private $pdo = null;
     private $feed = array();
 
     public function connect()
     {
-        $dbn = mysql_connect($this->host, $this->user, $this->password) or die("Cannot connect to MySQL!");
-        mysql_select_db($this->db) or die("Cannot connect to database!");
-        mysql_query("set character_set_client='utf8'");
-        mysql_query("set character_set_results='utf8'");
-        mysql_query("set collation_connection='utf8_general_ci'");
+        $dsn = "mysql:host=$this->host;dbname=$this->db;charset=$this->charset";
+        $opt = array(
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        );
+
+        try {
+            $this->pdo = new PDO($dsn, $this->user, $this->password, $opt);
+        } catch (PDOException $e) {
+            die('Подключение не удалось: ' . $e->getMessage());
+        }
+    }
+
+    private function deleteImage($path)
+    {
+        $deletePath = $_SERVER['DOCUMENT_ROOT'] .
+            DIRECTORY_SEPARATOR . 'index' .
+            DIRECTORY_SEPARATOR . 'rsslab' .
+            DIRECTORY_SEPARATOR . $path;
+
+        // for remote host
+//        $deletePath = $_SERVER['DOCUMENT_ROOT'] .
+//        DIRECTORY_SEPARATOR . $path;
+
+        if (file_exists($deletePath)) {
+            unlink($deletePath);
+        }
     }
 
     public function deleteNewsflash($params)
     {
-        $this->query_string = "DELETE FROM newsflash WHERE id='{$params}'";
-        $this->execute();
+        $query = "SELECT image FROM newsflash WHERE id=?";
+        $sth = $this->pdo->prepare($query);
+        $sth->execute(array($params));
 
-        $this->query_string = "DELETE FROM news WHERE newsflash='{$params}'";
-        $this->execute();
+        $data = $sth->fetch();
+        $this->deleteImage($data['image']);
+
+        $query = "DELETE FROM newsflash WHERE id=?";
+        $sth = $this->pdo->prepare($query);
+        $sth->execute(array($params));
+
+        $query = "DELETE FROM news WHERE newsflash=?";
+        $sth = $this->pdo->prepare($query);
+        $sth->execute(array($params));
     }
 
     public function deleteChannel($params)
     {
-        $this->query_string = "SELECT newsflash FROM news WHERE channel='{$params}'";
-        $this->execute();
 
-        $row = mysql_fetch_array($this->result);
-        $this->query_string = "DELETE FROM newsflash WHERE id='{$row['newsflash']}'";
-        $this->execute();
+        $query = "SELECT newsflash FROM news WHERE channel=?";
+        $sth = $this->pdo->prepare($query);
+        $sth->execute(array($params));
 
-        $this->query_string = "DELETE FROM news WHERE channel='{$params}'";
-        $this->execute();
+        $data = $sth->fetchAll();
 
-        $this->query_string = "DELETE FROM channel WHERE id='{$params}'";
-        $this->execute();
+        for ($i = 0; $i < count($data); $i += 1) {
+            $this->deleteNewsflash($data[$i]['newsflash']);
+        }
 
+        $query = "DELETE FROM news WHERE channel=?";
+        $sth = $this->pdo->prepare($query);
+        $sth->execute(array($params));
+
+        $query = "DELETE FROM channel WHERE id=?";
+        $sth = $this->pdo->prepare($query);
+        $sth->execute(array($params));
     }
 
     public function insertNewsflash($params)
     {
-        $max = 0;
-        $date = new \DateTime('now');
+        $date = new DateTime('now');
         $result = $date->format('d-m-Y H:i:s');
 
-        $this->query_string = "INSERT INTO newsflash (title, description, link, image, datetime) VALUES ('{$params->title}', '{$params->description}', '{$params->link}', '{$params->image}', '{$result}');";
-        $this->execute();
+        $query = "INSERT INTO newsflash (title, description, link, image, datetime) VALUES (:title, :description, :link, :image, :datetime)";
+        $sth = $this->pdo->prepare($query);
+        $sth->bindParam(':title', $params->title);
+        $sth->bindParam(':description', $params->description);
+        $sth->bindParam(':link', $params->link);
+        $sth->bindParam(':image', $params->image);
+        $sth->bindParam(':datetime', $result);
+        $sth->execute();
 
-        $this->query_string = "SELECT MAX(id) AS id FROM newsflash;";
-        $this->execute();
-        while ($row = mysql_fetch_array($this->result)) {
-            $max = $row['id'];
-        }
+        $query = "SELECT MAX(id) AS id FROM newsflash;";
+        $sth = $this->pdo->prepare($query);
+        $sth->execute();
 
-        $this->query_string = "INSERT INTO news (channel, newsflash) VALUES ('{$params->channel}', '{$max}');";
-        $this->execute();
+        $data = $sth->fetch();
+
+        $query = "INSERT INTO news (channel, newsflash) VALUES (:channel, :max)";
+        $sth = $this->pdo->prepare($query);
+        $sth->bindParam(':channel', $params->channel);
+        $sth->bindParam(':max', $data['id']);
+        $sth->execute();
+
     }
 
     public function insertChannel($params)
     {
-        $date = new \DateTime('now');
+        $date = new DateTime('now');
         $result = $date->format('d-m-Y H:i:s');
 
-        $this->query_string = "INSERT INTO channel (title, description, link, datetime) VALUES ('{$params->title}', '{$params->description}', '{$params->link}', '{$result}')";
-        $this->execute();
+        $query = "INSERT INTO channel (title, description, link, datetime) VALUES (:title, :description, :link, :datetime)";
+
+        $sth = $this->pdo->prepare($query);
+        $sth->bindParam(':title', $params->title);
+        $sth->bindParam(':description', $params->description);
+        $sth->bindParam(':link', $params->link);
+        $sth->bindParam(':datetime', $result);
+        $sth->execute();
     }
 
     public function extract()
     {
-        $this->query_string = "SELECT * FROM channel";
-        $this->execute();
+        $query = "SELECT * FROM channel";
+        $sth = $this->pdo->prepare($query);
+        $sth->execute();
 
-        while ($row = mysql_fetch_array($this->result)) {
+        $data = $sth->fetchAll();
+
+
+        for ($i = 0; $i < count($data); $i += 1) {
+
             $this->feed[] = array(
-                'id' => $row['id'],
-                'channel_id' => $row['id'],
-                'title' => $row['title'],
-                'description' => $row['description'],
-                'link' => $row['link'],
-                'datetime' => $row['datetime'],
+                'id' => $data[$i]['id'],
+                'channel_id' => $data[$i]['id'],
+                'title' => $data[$i]['title'],
+                'description' => $data[$i]['description'],
+                'link' => $data[$i]['link'],
+                'datetime' => $data[$i]['datetime'],
                 'feed' => array());
         }
 
-        $this->query_string = "SELECT newsflash.id, newsflash.title, newsflash.link, newsflash.description, newsflash.image, newsflash.datetime, news.channel
-                               FROM newsflash
-                               INNER JOIN news
-                               ON newsflash.id = news.newsflash";
-        $this->execute();
+        $query = "SELECT newsflash.id, newsflash.title, newsflash.link, newsflash.description, newsflash.image, newsflash.datetime, news.channel
+                  FROM newsflash
+                  INNER JOIN news
+                  ON newsflash.id = news.newsflash";
+        $sth = $this->pdo->prepare($query);
+        $sth->execute();
 
-        while ($row = mysql_fetch_array($this->result)) {
-            for ($i = 0; $i < count($this->feed); $i += 1) {
-                if ($this->feed[$i]['id'] == $row['channel']) {
-                    $this->feed[$i]['feed'][] = array(
-                        'id' => $row['id'],
-                        'title' => $row['title'],
-                        'description' => $row['description'],
-                        'link' => $row['link'],
-                        'image' => $row['image'],
-                        'datetime' => $row['datetime']
+        $data = $sth->fetchAll();
+
+        for ($i = 0; $i < count($data); $i += 1) {
+            for ($j = 0; $j < count($this->feed); $j += 1) {
+                if ($this->feed[$j]['id'] == $data[$i]['channel']) {
+                    $this->feed[$j]['feed'][] = array(
+                        'id' => $data[$i]['id'],
+                        'title' => $data[$i]['title'],
+                        'description' => $data[$i]['description'],
+                        'link' => $data[$i]['link'],
+                        'image' => $data[$i]['image'],
+                        'datetime' => $data[$i]['datetime']
                     );
                 }
             }
         }
-    }
 
-    private function execute()
-    {
-        if (!empty($this->query_string) && $this->query_string != "") {
-            $this->result = mysql_query($this->query_string) or die(mysql_error());
-        }
-        $this->query_string = '';
     }
 
     public function getFeed()
@@ -139,5 +195,4 @@ class DataBase
         if (!empty($this->feed))
             return $this->feed;
     }
-
 }
