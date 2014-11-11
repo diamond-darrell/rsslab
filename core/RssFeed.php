@@ -6,12 +6,12 @@ require_once('DataBase.php');
 
 class RssFeed
 {
-    private $feed = '';
+    private $_feed = '';
 
-    public function __construct()
+    public function __construct($channelId)
     {
         $db = new DataBase();
-        $db->extract();
+        $db->extract($channelId);
         $data = $db->getFeed();
 
         $feed = '<?xml version="1.0" encoding="UTF-8" ?>';
@@ -42,13 +42,13 @@ class RssFeed
         }
         $feed .= '</rss>';
 
-        $this->feed = $feed;
+        $this->_feed = $feed;
     }
 
     public function getFeed()
     {
-        if(!empty($this->feed)) {
-            echo $this->feed;
+        if(!empty($this->_feed)) {
+            echo $this->_feed;
         } else {
             echo '<?xml version="1.0" encoding="UTF-8" ?><rss version="2.0"><nofeed>No Feed!</nofeed>';
         }

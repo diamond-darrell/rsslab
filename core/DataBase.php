@@ -45,7 +45,6 @@ class DataBase
         }
     }
 
-    // i know, it's bad
     private function deleteImage($path)
     {
         $deletePath = $_SERVER['DOCUMENT_ROOT'] .
@@ -145,7 +144,49 @@ class DataBase
         $sth->execute();
     }
 
-    public function extract()
+    public function extract($channelId)
+    {
+        $query = "SELECT * FROM channel WHERE id=?";
+        $sth = $this->pdo->prepare($query);
+        $sth->execute(array($channelId));
+
+        $data = $sth->fetch();
+
+        $this->feed[] = array(
+            'id' => $data['id'],
+            'channel_id' => $data['id'],
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'link' => $data['link'],
+            'datetime' => $data['datetime'],
+            'feed' => array());
+
+        $query = "SELECT newsflash.id, newsflash.title, newsflash.link, newsflash.description, newsflash.image, newsflash.datetime, news.channel
+                  FROM newsflash
+                  INNER JOIN news
+                  ON newsflash.id = news.newsflash AND news.channel=?";
+        $sth = $this->pdo->prepare($query);
+        $sth->execute(array($channelId));
+
+        $data = $sth->fetchAll();
+
+        for ($i = 0; $i < count($data); $i += 1) {
+            for ($j = 0; $j < count($this->feed); $j += 1) {
+                if ($this->feed[$j]['id'] == $data[$i]['channel']) {
+                    $this->feed[$j]['feed'][] = array(
+                        'id' => $data[$i]['id'],
+                        'title' => $data[$i]['title'],
+                        'description' => $data[$i]['description'],
+                        'link' => $data[$i]['link'],
+                        'image' => $data[$i]['image'],
+                        'datetime' => $data[$i]['datetime']
+                    );
+                }
+            }
+        }
+    }
+
+    public function extractAll()
     {
         $query = "SELECT * FROM channel";
         $sth = $this->pdo->prepare($query);

@@ -2,8 +2,9 @@
     <div class="row">
         <label for="choose-channel">Канал</label>
         <select id="choose-channel"
-                ng-model="myChannel"
+                ng-model="currentChannel"
                 ng-options="channel.title for channel in channels"
+                ng-change="selectChange()"
                 class="form-control">
             <option></option>
         </select>
@@ -11,13 +12,13 @@
     <br/>
 
     <div class="row">
-        <i>{{myChannel.datetime}}</i>
-        <h4>{{myChannel.description}}</h4>
-        <a href="{{myChannel.link}}">Перейти на канал</a>
+        <i>{{currentChannel.datetime}}</i>
+        <h4>{{currentChannel.description}}</h4>
+        <a href="{{currentChannel.link}}">Перейти на канал</a>
     </div>
     <br/>
 
-    <div class="row well" ng-repeat="item in myChannel.feed">
+    <div class="row well" ng-repeat="item in currentChannel.feed">
         <div class="col-md-3">
             <img class="img-responsive img-rounded" ng-src="{{item.image}}">
         </div>

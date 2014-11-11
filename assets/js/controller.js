@@ -25,17 +25,16 @@ rssApp.controller('GlobalCtrl', function ($scope, $http, $timeout) {
 
     $http.get('core/showFeed.php').success(function (data) {
         $scope.channels = data;
-		//console.log($scope.channels);
+        //console.log($scope.channels);
     }).error(function () {
         $scope.onAlert($scope.alertsMsg.FAIL);
     }).then(function () {
         $scope.channels = $scope.rewriteArraysId($scope.channels);
-        $scope.myChannel = $scope.channels[0];
+        $scope.currentChannel = $scope.channels[0];
 
-        //console.log($scope.myChannel.feed);
+        //console.log($scope.currentChannel);
     });
 
-    
     // rewrite `id` property in channel's array
     // bad idea, but works :)
     $scope.rewriteArraysId = function (arr) {
@@ -50,19 +49,21 @@ rssApp.controller('GlobalCtrl', function ($scope, $http, $timeout) {
         $scope.alerts = [
             {type: result.type, msg: result.msg}
         ];
-        $timeout(removeAlert, 5000);
+        $timeout($scope.removeAlert, 5000);
 
 
     };
 
-    var removeAlert = function () {
+    $scope.removeAlert = function () {
         $scope.alertClass = "animated fadeOutDown";
         $timeout(function () {
             $scope.alerts = [];
         }, 800);
+    };
 
+    $scope.selectChange = function() {
+        console.log($scope.currentChannel);
     }
-
 });
 
 //-----------------------------------------------------------------------
@@ -70,6 +71,24 @@ rssApp.controller('GlobalCtrl', function ($scope, $http, $timeout) {
 //-----------------------------------------------------------------------
 rssApp.controller('FeedCtrl', function ($scope) {
 
+});
+
+//-----------------------------------------------------------------------
+// External Feed controller
+//-----------------------------------------------------------------------
+rssApp.controller('ExternalFeedCtrl', function ($scope, $http) {
+
+    $scope.readExternalFeed = function (path) {
+        $scope.generateView(path);
+    };
+
+    $scope.generateView = function (path) {
+        $http.post('core/readExternalFeed.php', path).success(function () {
+            console.log("Have been sending")
+        }).error(function () {
+            $scope.onAlert($scope.alertsMsg.DANGER);
+        });
+    };
 });
 
 //-----------------------------------------------------------------------
@@ -106,7 +125,7 @@ rssApp.controller('ManageCtrl', function ($scope, $http, FileUploader) {
         dataBase.deleteChannel(id);
 
         $scope.channels.splice(index, 1);
-        $scope.myChannel = $scope.channels[0];
+        $scope.currentChannel = $scope.channels[0];
         $scope.channels = $scope.rewriteArraysId($scope.channels);
     };
 
@@ -120,9 +139,7 @@ rssApp.controller('ManageCtrl', function ($scope, $http, FileUploader) {
     };
 
     $scope.addNewsflash = function (channel, channel_id, newsflash) {
-        var id = $scope.channels[channel].feed.length;
-
-        newsflash.id = id;
+        newsflash.id = $scope.channels[channel].feed.length;
         newsflash.channel = channel_id;
         newsflash.image = "images/" + image;
         $scope.channels[channel].feed.push(newsflash);
@@ -193,7 +210,7 @@ rssApp.controller('ManageCtrl', function ($scope, $http, FileUploader) {
 
     uploader.filters.push({
         name: 'imageFilter',
-        fn: function(item /*{File|FileLikeObject}*/, options) {
+        fn: function (item /*{File|FileLikeObject}*/, options) {
             var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
             return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
         }
@@ -201,12 +218,10 @@ rssApp.controller('ManageCtrl', function ($scope, $http, FileUploader) {
 
     // sorry for that T_T
     // you can kill me later
-    $scope.fileNameChanged = function() {
+    $scope.fileNameChanged = function () {
         var input = document.getElementById("newsflash-img");
         image = input.value.substr(12);
 
         //console.log(image);
     };
-
-
 });

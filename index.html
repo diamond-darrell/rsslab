@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="assets/css/animate.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body>
+<body ng-controller="GlobalCtrl">
 <nav class="navbar navbar-default" role="navigation" ng-controller="NavCtrl">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -36,16 +36,25 @@
             <ul class="nav navbar-nav">
                 <li ng-class="{active: isActive('/feed')}"><a href="#/feed">Лента</a></li>
                 <li ng-class="{active: isActive('/manage')}"><a href="#/manage">Менеджер новостей</a></li>
-                <li><a href="core/getRssFeed.php"  target="_blank">Получить RSS-фид </a></li>
+                <li><a type="application/rss+xml" href="core/getRssFeed.php?channelId={{currentChannel.channel_id}}"
+                       target="_blank">Получить RSS-фид </a></li>
                 <li><a href="#" data-toggle="modal" data-target="#infoModal" target="_blank">Информация</a></li>
             </ul>
+            <form ng-controller="ExternalFeedCtrl" class="navbar-form navbar-right">
+                <div class="form-group">
+                    <input type="url" required ng-model="externalFeed" class="form-control"
+                           placeholder="Ссылка на канал">
+                </div>
+                <button type="submit" ng-click="readExternalFeed(externalFeed)" class="btn btn-default">Читать <i
+                        class="fa fa-rss"></i></button>
+            </form>
 
         </div>
         <!-- /.navbar-collapse -->
     </div>
     <!-- /.container-fluid -->
 </nav>
-<div class="container-fluid" ng-controller="GlobalCtrl">
+<div class="container-fluid">
     <div class="col-md-12 col-sm-12 col-xs-12">
         <ng-view></ng-view>
 
@@ -63,17 +72,20 @@
                 <h4 class="modal-title" id="myModalLabel">Создание интерактивных медиа</h4>
             </div>
             <div class="modal-body">
-				<div class="row">
-					<div class="col-md-6">
-						<img class="img-responsive img-circle img-thumbnail" ng-src="author.jpg">
-					</div>
-					<div class="col-md-6">
-						<br>
-						<small>Автор:</small>
-                		<small>студент гр. 8.04.61.14.01</small>
-                		<h2>Когут С.</h2>
-					</div>                	
-				</div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <img class="img-responsive img-circle img-thumbnail" ng-src="author.jpg">
+                    </div>
+                    <div class="col-md-6">
+                        <br>
+                        <small>Автор:</small>
+                        <small>студент гр. 8.04.61.14.01</small>
+                        <h2>Когут Станислав</h2>
+                        <br/>
+                        <h4><a href="https://vk.com/staskgt"><i class="fa fa-vk"></i> Вконтакте</a></h4>
+                        <h4><a href="https://github.com/diamond-darrell"><i class="fa fa-github"></i> Github</a></h4>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
