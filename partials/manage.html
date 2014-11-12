@@ -3,8 +3,11 @@
         <div class="form-inline">
             <div class="form-group pad">
                 <label for="choose-channel">Канал</label>
-                <select id="choose-channel" ng-model="currentChannel" class="form-control"
-                        ng-options="channel.title for channel in channels">
+                <select id="choose-channel"
+                        ng-model="currentChannel"
+                        ng-change="selectChange(currentChannel)"
+                        ng-options="channel.title for channel in channels"
+                        class="form-control">
                     <option></option>
                 </select>
             </div>
@@ -174,3 +177,4 @@
             <a href="{{item.link}}" target="_blank">Перейти на новость</a>
         </div>
     </div>
+</div>

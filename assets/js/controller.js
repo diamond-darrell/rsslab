@@ -31,6 +31,7 @@ rssApp.controller('GlobalCtrl', function ($scope, $http, $timeout) {
     }).then(function () {
         $scope.channels = $scope.rewriteArraysId($scope.channels);
         $scope.currentChannel = $scope.channels[0];
+        $scope.currentChannelId = $scope.currentChannel.channel_id;
 
         //console.log($scope.currentChannel);
     });
@@ -61,8 +62,8 @@ rssApp.controller('GlobalCtrl', function ($scope, $http, $timeout) {
         }, 800);
     };
 
-    $scope.selectChange = function() {
-        console.log($scope.currentChannel);
+    $scope.selectChange = function(channel) {
+        $scope.currentChannelId = channel.channel_id;
     }
 });
 

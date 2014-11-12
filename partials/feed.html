@@ -4,7 +4,7 @@
         <select id="choose-channel"
                 ng-model="currentChannel"
                 ng-options="channel.title for channel in channels"
-                ng-change="selectChange()"
+                ng-change="selectChange(currentChannel)"
                 class="form-control">
             <option></option>
         </select>
@@ -17,7 +17,6 @@
         <a href="{{currentChannel.link}}">Перейти на канал</a>
     </div>
     <br/>
-
     <div class="row well" ng-repeat="item in currentChannel.feed">
         <div class="col-md-3">
             <img class="img-responsive img-rounded" ng-src="{{item.image}}">
