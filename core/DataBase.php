@@ -5,6 +5,7 @@ namespace Core;
 use \PDO;
 use \PDOException;
 use \DateTime;
+use \DateTimeZone;
 
 /**
  * Description of DataBase
@@ -20,10 +21,10 @@ class DataBase
 //    private $db = 'u894053700_rss';
 
 //  localhost settings
-    private $host = 'localhost';
-    private $user = 'root';
-    private $password = '';
-    private $db = 'rss_ar';
+//    private $host = 'localhost';
+//    private $user = 'root';
+//    private $password = '';
+//    private $db = 'rss_ar';
 
     private $charset = 'utf8';
     private $pdo = null;
@@ -103,8 +104,8 @@ class DataBase
 
     public function insertNewsflash($params)
     {
-        $date = new DateTime('now');
-        $result = $date->format('d-m-Y H:i:s');
+        $date = new DateTime('now', new DateTimeZone('Europe/Kiev'));
+        $result = $date->format(DATE_RSS);
 
         $query = "INSERT INTO newsflash (title, description, link, image, datetime) VALUES (:title, :description, :link, :image, :datetime)";
         $sth = $this->pdo->prepare($query);
@@ -131,8 +132,8 @@ class DataBase
 
     public function insertChannel($params)
     {
-        $date = new DateTime('now');
-        $result = $date->format('d-m-Y H:i:s');
+        $date = new DateTime('now', new DateTimeZone('Europe/Kiev'));
+        $result = $date->format(DATE_RSS);
 
         $query = "INSERT INTO channel (title, description, link, datetime) VALUES (:title, :description, :link, :datetime)";
 
@@ -163,8 +164,9 @@ class DataBase
 
         $query = "SELECT newsflash.id, newsflash.title, newsflash.link, newsflash.description, newsflash.image, newsflash.datetime, news.channel
                   FROM newsflash
-                  INNER JOIN news
-                  ON newsflash.id = news.newsflash AND news.channel=?";
+                    INNER JOIN news
+                    ON newsflash.id = news.newsflash AND news.channel=?
+                  ORDER BY newsflash.datetime DESC";
         $sth = $this->pdo->prepare($query);
         $sth->execute(array($channelId));
 

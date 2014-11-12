@@ -160,7 +160,7 @@
     </div>
     <br/>
 
-    <div class="row well" ng-repeat="item in currentChannel.feed">
+    <div class="row well" ng-repeat="item in currentChannel.feed | orderBy:'datetime':true">
         <a href ng-click="deleteNewsflash($index, currentChannel.id)" class="close"><i class="fa fa-close"></i></a>
         <br/>
         <br/>

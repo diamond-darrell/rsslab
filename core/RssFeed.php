@@ -15,10 +15,18 @@ class RssFeed
         $data = $db->getFeed();
 
         $feed = '<?xml version="1.0" encoding="UTF-8" ?>';
-        $feed .= '<rss version="2.0">';
+        $feed .= '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">';
+
 
         for ($i = 0; $i < count($data); $i += 1) {
             $feed .= '<channel>';
+
+            // localhost
+//            $feed .= '<atom:link href="http://localhost/index/rsslab/core/getRssFeed.php?channelId=' . $channelId . '" rel="self" type="application/rss+xml" />';
+
+            // remote server
+            $feed .= '<atom:link href="http://rsslab.esy.es/core/getRssFeed.php?channelId=' . $channelId . '" rel="self" type="application/rss+xml" />';
+
             $feed .= '<title>' . $data[$i]['title'] . '</title>';
             $feed .= '<link>' . $data[$i]['link'] . '</link>';
             $feed .= '<description>' . $data[$i]['description'] . '</description>';
@@ -31,13 +39,18 @@ class RssFeed
                 $feed .= '<link>' . $tmp['link'] . '</link>';
                 $feed .= '<description>' . $tmp['description'] . '</description>';
 
-                // localhost
-                $feed .= '<image>' . 'localhost/rsslab/' . $tmp['image'] . '</image>';
                 // remote server
-                //$feed .= '<image>' . $_SERVER['DOCUMENT_ROOT'] . $tmp['image'] . '</image>';
+                $feed .= '<media:content type="image/*" url="' . 'http://rsslab.esy.es/' . $tmp['image'] . '" />';
+
+                // localhost
+//                $feed .= '<media:content type="image/*" url="' . 'localhost/rsslab/' . $tmp['image'] . '" />';
+
                 $feed .= '<pubDate>' . $tmp['datetime'] . '</pubDate>';
+                $feed .= '<guid>' . $tmp['link'] . '</guid>';
                 $feed .= '</item>';
             }
+
+
             $feed .= '</channel>';
         }
         $feed .= '</rss>';
@@ -47,7 +60,7 @@ class RssFeed
 
     public function getFeed()
     {
-        if(!empty($this->_feed)) {
+        if (!empty($this->_feed)) {
             echo $this->_feed;
         } else {
             echo '<?xml version="1.0" encoding="UTF-8" ?><rss version="2.0"><nofeed>No Feed!</nofeed>';

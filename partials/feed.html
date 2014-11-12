@@ -17,7 +17,7 @@
         <a href="{{currentChannel.link}}">Перейти на канал</a>
     </div>
     <br/>
-    <div class="row well" ng-repeat="item in currentChannel.feed">
+    <div class="row well" ng-repeat="item in currentChannel.feed | orderBy:'datetime':true">
         <div class="col-md-3">
             <img class="img-responsive img-rounded" ng-src="{{item.image}}">
         </div>
