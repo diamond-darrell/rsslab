@@ -36,19 +36,11 @@
             <ul class="nav navbar-nav">
                 <li ng-class="{active: isActive('/feed')}"><a href="#/feed">Лента</a></li>
                 <li ng-class="{active: isActive('/manage')}"><a href="#/manage">Менеджер новостей</a></li>
+                <li ng-class="{active: isActive('/read')}"><a href="#/read">Читать новости</a></li>
                 <li><a type="application/rss+xml" href="core/getRssFeed.php?channelId={{currentChannelId}}"
                        target="_blank">Получить RSS-фид </a></li>
                 <li><a href="#" data-toggle="modal" data-target="#infoModal" target="_blank">Информация</a></li>
             </ul>
-            <form ng-controller="ExternalFeedCtrl" class="navbar-form navbar-right">
-                <div class="form-group">
-                    <input type="url" required ng-model="externalFeed" class="form-control"
-                           placeholder="Ссылка на канал">
-                </div>
-                <button type="submit" ng-click="readExternalFeed(externalFeed)" class="btn btn-default">Читать <i
-                        class="fa fa-rss"></i></button>
-            </form>
-
         </div>
         <!-- /.navbar-collapse -->
     </div>
@@ -101,6 +93,8 @@
 <script src="assets/js/angular-route.min.js"></script>
 <script src="assets/js/ui-bootstrap-tpls-0.11.2.min.js"></script>
 <script src="assets/js/angular-file-upload.min.js"></script>
+<script src="assets/js/angular-resource.min.js"></script>
+<script src="assets/js/jsapi.js"></script>
 <script src="assets/js/app.js"></script>
 <script src="assets/js/controller.js"></script>
 <script src="assets/js/directives.js"></script>

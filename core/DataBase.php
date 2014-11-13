@@ -21,10 +21,10 @@ class DataBase
 //    private $db = 'u894053700_rss';
 
 //  localhost settings
-//    private $host = 'localhost';
-//    private $user = 'root';
-//    private $password = '';
-//    private $db = 'rss_ar';
+    private $host = 'localhost';
+    private $user = 'root';
+    private $password = '';
+    private $db = 'rss_ar';
 
     private $charset = 'utf8';
     private $pdo = null;

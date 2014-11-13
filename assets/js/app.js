@@ -2,7 +2,8 @@ var rssApp = angular.module('rssApp', [
     'ngRoute',
     'ui.bootstrap',
     'rssCtrl',
-    'angularFileUpload'
+    'angularFileUpload',
+    'ngResource'
 ]);
 
 rssApp.config(['$routeProvider', function ($routeProvider) {
@@ -16,6 +17,10 @@ rssApp.config(['$routeProvider', function ($routeProvider) {
         }).
         when('/manage', {
             templateUrl: 'partials/manage.html',
+            controller: 'ManageCtrl'
+        }).
+        when('/read', {
+            templateUrl: 'partials/read.html',
             controller: 'ManageCtrl'
         }).
         otherwise({

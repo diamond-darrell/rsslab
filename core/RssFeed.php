@@ -22,10 +22,10 @@ class RssFeed
             $feed .= '<channel>';
 
             // localhost
-//            $feed .= '<atom:link href="http://localhost/index/rsslab/core/getRssFeed.php?channelId=' . $channelId . '" rel="self" type="application/rss+xml" />';
+            $feed .= '<atom:link href="http://localhost/index/rsslab/core/getRssFeed.php?channelId=' . $channelId . '" rel="self" type="application/rss+xml" />';
 
             // remote server
-            $feed .= '<atom:link href="http://rsslab.esy.es/core/getRssFeed.php?channelId=' . $channelId . '" rel="self" type="application/rss+xml" />';
+//            $feed .= '<atom:link href="http://rsslab.esy.es/core/getRssFeed.php?channelId=' . $channelId . '" rel="self" type="application/rss+xml" />';
 
             $feed .= '<title>' . $data[$i]['title'] . '</title>';
             $feed .= '<link>' . $data[$i]['link'] . '</link>';
@@ -40,10 +40,10 @@ class RssFeed
                 $feed .= '<description>' . $tmp['description'] . '</description>';
 
                 // remote server
-                $feed .= '<media:content type="image/*" url="' . 'http://rsslab.esy.es/' . $tmp['image'] . '" />';
+//                $feed .= '<media:content type="image/*" url="' . 'http://rsslab.esy.es/' . $tmp['image'] . '" />';
 
                 // localhost
-//                $feed .= '<media:content type="image/*" url="' . 'localhost/rsslab/' . $tmp['image'] . '" />';
+                $feed .= '<media:content type="image/*" url="' . 'localhost/rsslab/' . $tmp['image'] . '" />';
 
                 $feed .= '<pubDate>' . $tmp['datetime'] . '</pubDate>';
                 $feed .= '<guid>' . $tmp['link'] . '</guid>';

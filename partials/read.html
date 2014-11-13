@@ -1,0 +1,28 @@
+<div ng-controller="ReadCtrl">
+    <form role="form">
+        <h2>Добавление канала</h2>
+
+        <div class="form-group">
+            <label for="channel-url">Адрес канал</label>
+            <input type="url" class="form-control" id="channel-url" required placeholder="URL канала"
+                   ng-model="addChannel.url">
+        </div>
+        <button type="submit" class="btn btn-default" ng-click="addChannel(addChannel.url)">Добавить</button>
+    </form>
+
+    <div class="row" ng-repeat="feed in feeds | orderBy:'date'">
+        <h2>{{feed.title}}</h2>
+        <a href="{{feed.link}}">Перейти на канал</a>
+        <br/>
+        <br/>
+        <br/>
+
+        <div class="row well" ng-repeat="item in feed.entries">
+            <p class="text-right">{{item.publishedDate | date:'d-MM-yyyy HH:mm'}}</p>
+
+            <h3>{{item.title}}</h3>
+
+            <a href="{{item.link}}" target="_blank">Перейти на новость</a>
+        </div>
+    </div>
+</div>

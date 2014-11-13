@@ -62,7 +62,7 @@ rssApp.controller('GlobalCtrl', function ($scope, $http, $timeout) {
         }, 800);
     };
 
-    $scope.selectChange = function(channel) {
+    $scope.selectChange = function (channel) {
         $scope.currentChannelId = channel.channel_id;
     }
 });
@@ -74,23 +74,6 @@ rssApp.controller('FeedCtrl', function ($scope) {
 
 });
 
-//-----------------------------------------------------------------------
-// External Feed controller
-//-----------------------------------------------------------------------
-rssApp.controller('ExternalFeedCtrl', function ($scope, $http) {
-
-    $scope.readExternalFeed = function (path) {
-        $scope.generateView(path);
-    };
-
-    $scope.generateView = function (path) {
-        $http.post('core/readExternalFeed.php', path).success(function () {
-            console.log("Have been sending")
-        }).error(function () {
-            $scope.onAlert($scope.alertsMsg.DANGER);
-        });
-    };
-});
 
 //-----------------------------------------------------------------------
 // Navigation controller
@@ -226,3 +209,48 @@ rssApp.controller('ManageCtrl', function ($scope, $http, FileUploader) {
         //console.log(image);
     };
 });
+
+
+//-----------------------------------------------------------------------
+// ReadCtrl controller
+//-----------------------------------------------------------------------
+
+var feeds = [];
+
+rssApp.factory('FeedLoader', function ($resource) {
+    return $resource('http://ajax.googleapis.com/ajax/services/feed/load', {}, {
+        fetch: {method: 'JSONP', params: {v: '1.0', callback: 'JSON_CALLBACK'}}
+    });
+})
+    .service('FeedList', function ($rootScope, FeedLoader) {
+        this.get = function (feedSources) {
+
+            if (feeds.length === 0) {
+                for (var i = 0; i < feedSources.length; i++) {
+                    FeedLoader.fetch({q: feedSources[i].url, num: 10}, {}, function (data) {
+                        var feed = data.responseData.feed;
+                        feeds.push(feed);
+                    });
+                }
+            }
+
+            console.log(feeds);
+
+            return feeds;
+        };
+    })
+    .controller('ReadCtrl', function ($scope, FeedList) {
+
+        var sources = [];
+
+        $scope.addChannel = function (channel) {
+            sources.push({url: channel});
+
+            $scope.feeds = FeedList.get(sources);
+
+            $scope.$on('FeedList', function (event, data) {
+                $scope.feeds = data;
+            });
+            $scope.addChannel = [];
+        };
+    });
